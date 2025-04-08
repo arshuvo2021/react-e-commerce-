@@ -1,11 +1,8 @@
-import React from 'react';
-
+// src/components/Footer.jsx
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white p-4 mt-8">
-      <div className="container mx-auto text-center">
-        <p>&copy; 2025 React E-Commerce. All rights reserved.</p>
-      </div>
+    <footer className="bg-gray-100 text-center py-4 mt-10">
+      <p className="text-sm text-gray-600">© 2025 React E-Commerce. All rights reserved.</p>
     </footer>
   );
 };
