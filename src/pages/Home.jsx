@@ -1,64 +1,112 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';  // Import axios for making API requests
-import { useCart } from '../context/CartContext'; // Import the useCart hook from context
+import { useCart } from '../context/CartContext';
 
 const Home = () => {
   const [productList, setProductList] = useState([]);
-  const [loading, setLoading] = useState(true);  // Loading state
-  const [error, setError] = useState(null);  // Error handling
-  const { addToCart } = useCart();  // Extract addToCart from context
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    // Fetch products from Fake Store API
-    axios
-      .get('https://fakestoreapi.com/products')
-      .then((response) => {
-        setProductList(response.data);  // Update state with fetched products
-        setLoading(false);  // Set loading to false when products are loaded
-      })
-      .catch((err) => {
-        setError('Failed to load products');  // Handle error
-        setLoading(false);  // Set loading to false on error
-      });
+    const localProducts = localStorage.getItem('productList');
+    if (localProducts) {
+      setProductList(JSON.parse(localProducts));
+    }
   }, []);
 
-  // Show loading or error state if fetching products
-  if (loading) return <div className="text-center p-8">Loading products...</div>;
-  if (error) return <div className="text-center p-8 text-red-500">{error}</div>;
+  if (!productList.length) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div style={{ fontSize: '24px', marginBottom: '10px' }}>No products available</div>
+        <Link 
+          to="/add-product" 
+          style={{
+            display: 'inline-block',
+            padding: '8px 16px',
+            backgroundColor: '#000',
+            color: '#fff',
+            textDecoration: 'none'
+          }}
+        >
+          Add Products
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-screen-xl mx-auto p-6">
-      <h1 className="text-4xl font-bold text-center mb-8">🛒 Welcome to React E-Commerce</h1>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div style={{ padding: '20px' }}>
+      <h1 style={{ fontSize: '28px', marginBottom: '20px' }}>Products</h1>
+      
+      <div style={{ 
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: '20px'
+      }}>
         {productList.map((product) => (
-          <div
+          <div 
             key={product.id}
-            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition duration-300"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '200px',
+              border: '1px solid #ddd',
+              padding: '10px'
+            }}
           >
-            <div className="w-full h-56 overflow-hidden mb-4 relative">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-full h-full object-cover object-center rounded-lg"
-              />
+            <img 
+              src={product.image} 
+              alt={product.name} 
+              style={{ 
+                width: '100%', 
+                height: '150px',
+                objectFit: 'cover',
+                marginBottom: '10px'
+              }} 
+            />
+            <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>{product.name}</div>
+            <div style={{ 
+              fontSize: '14px', 
+              color: '#666',
+              marginBottom: '10px',
+              height: '40px',
+              overflow: 'hidden'
+            }}>
+              {product.description}
             </div>
-            <h2 className="text-xl font-semibold mb-1">{product.title}</h2>
-            <p className="text-sm text-gray-600 mb-2 line-clamp-2">{product.description}</p>
-            <p className="text-lg font-bold text-blue-600 mb-4">${product.price}</p>
-            <button
-              onClick={() => addToCart(product)}  // Add product to cart on click
-              className="block bg-green-600 text-white text-center py-2 rounded-lg hover:bg-green-700 transition"
-            >
-              Add to Cart
-            </button>
-            <Link
-              to={`/product/${product.id}`}
-              className="block bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700 transition mt-2"
-            >
-              View Details
-            </Link>
+            <div style={{ 
+              fontWeight: 'bold',
+              marginBottom: '10px'
+            }}>
+              ${product.price}
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <Link 
+                to={`/product/${product.id}`}
+                style={{
+                  padding: '5px 10px',
+                  backgroundColor: '#eee',
+                  color: '#333',
+                  textDecoration: 'none',
+                  fontSize: '14px'
+                }}
+              >
+                View
+              </Link>
+              <button 
+                onClick={() => addToCart(product)}
+                style={{
+                  padding: '5px 10px',
+                  backgroundColor: '#000',
+                  color: '#fff',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                Add to Cart
+              </button>
+            </div>
           </div>
         ))}
       </div>
