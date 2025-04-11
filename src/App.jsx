@@ -4,6 +4,7 @@ import { CartProvider } from './context/CartContext'; // Import the CartProvider
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
+import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
@@ -20,11 +21,12 @@ const ProtectedRoute = ({ children }) => {
 const App = () => {
   return (
     <CartProvider>
-      <Router>
+      <Router basename="/react-e-commerce-">
         <Header />
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
             <Route path="/login" element={<Login />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
